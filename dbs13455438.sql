@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 02, 2024 at 07:25 PM
+-- Generation Time: Dec 27, 2024 at 12:37 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -394,6 +394,25 @@ INSERT INTO `reports` (`reports_id`, `report_date`, `revenue`, `profit_margin`, 
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `revenue_by_product`
+--
+
+CREATE TABLE `revenue_by_product` (
+  `id` int(11) NOT NULL,
+  `report_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `product_name` varchar(255) NOT NULL,
+  `total_quantity` int(11) NOT NULL,
+  `total_sales` decimal(15,2) NOT NULL,
+  `total_cost` decimal(15,2) NOT NULL,
+  `total_profit` decimal(15,2) NOT NULL,
+  `inventory_turnover_rate` decimal(10,4) NOT NULL,
+  `sell_through_rate` decimal(10,4) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `sales`
 --
 
@@ -515,9 +534,9 @@ INSERT INTO `staffs` (`staff_id`, `staff_name`, `staff_email`, `staff_phone`, `p
 CREATE TABLE `subscriptions` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `subscription_plan` enum('starter','business','enterprise') NOT NULL,
+  `subscription_plan` enum('trial','starter','business','enterprise') NOT NULL,
   `start_date` timestamp NOT NULL DEFAULT current_timestamp(),
-  `end_date` timestamp NOT NULL DEFAULT '2030-12-31 20:59:59',
+  `expiration_date` timestamp NOT NULL DEFAULT '2030-12-31 20:59:59',
   `status` enum('active','expired','canceled') DEFAULT 'active',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -569,15 +588,16 @@ CREATE TABLE `users` (
   `phone` varchar(20) NOT NULL,
   `location` varchar(255) NOT NULL,
   `google_id` varchar(255) DEFAULT NULL,
-  `status` int(1) NOT NULL
+  `status` int(1) NOT NULL,
+  `plan` enum('trial','starter','business','enterprise') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `email`, `password`, `is_active`, `role`, `date`, `confirmpassword`, `user_image`, `phone`, `location`, `google_id`, `status`) VALUES
-(2, 'Megastores', 'olphemie@hotmail.com', '$2y$10$X8uPrpPbouNMJNqhZvfKMOk.cxbTO0Cmqm2UIj9Y2r/f3wEyXA2sm', 0, 'sales', '2024-11-03 03:08:56', 'mega1234', 'uploads/user/1730604250_1730520358_1726523112_20230712_130458.jpg', '', 'Texas', NULL, 0);
+INSERT INTO `users` (`id`, `username`, `email`, `password`, `is_active`, `role`, `date`, `confirmpassword`, `user_image`, `phone`, `location`, `google_id`, `status`, `plan`) VALUES
+(2, 'Megastores', 'olphemie@hotmail.com', '$2y$10$X8uPrpPbouNMJNqhZvfKMOk.cxbTO0Cmqm2UIj9Y2r/f3wEyXA2sm', 0, 'admin', '2024-11-03 03:08:56', 'mega1234', 'uploads/user/1730604250_1730520358_1726523112_20230712_130458.jpg', '', 'Texas', NULL, 1, 'trial');
 
 --
 -- Indexes for dumped tables
@@ -669,6 +689,13 @@ ALTER TABLE `products`
 --
 ALTER TABLE `reports`
   ADD PRIMARY KEY (`reports_id`);
+
+--
+-- Indexes for table `revenue_by_product`
+--
+ALTER TABLE `revenue_by_product`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `report_id` (`report_id`);
 
 --
 -- Indexes for table `sales`
@@ -780,7 +807,7 @@ ALTER TABLE `password_resets`
 -- AUTO_INCREMENT for table `payments`
 --
 ALTER TABLE `payments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `products`
@@ -793,6 +820,12 @@ ALTER TABLE `products`
 --
 ALTER TABLE `reports`
   MODIFY `reports_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `revenue_by_product`
+--
+ALTER TABLE `revenue_by_product`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `sales`
@@ -840,6 +873,12 @@ ALTER TABLE `users`
 ALTER TABLE `payments`
   ADD CONSTRAINT `payments_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
   ADD CONSTRAINT `payments_ibfk_2` FOREIGN KEY (`subscription_id`) REFERENCES `subscriptions` (`id`);
+
+--
+-- Constraints for table `revenue_by_product`
+--
+ALTER TABLE `revenue_by_product`
+  ADD CONSTRAINT `revenue_by_product_ibfk_1` FOREIGN KEY (`report_id`) REFERENCES `reports` (`reports_id`);
 
 --
 -- Constraints for table `subscriptions`
