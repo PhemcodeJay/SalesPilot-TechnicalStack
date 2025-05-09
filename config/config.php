@@ -2,7 +2,7 @@
 // Database Configuration
 $hostname = "localhost";
 $username = "root";
-$password = "";
+$password = "1234";
 $database = "dbs13455438";
 
 // Data Source Name (DSN) for PDO

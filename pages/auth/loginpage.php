@@ -1,13 +1,7 @@
 <?php
-session_start([
-    'cookie_lifetime' => 86400,
-    'cookie_secure'   => true,
-    'cookie_httponly' => true,
-    'use_strict_mode' => true,
-    'sid_length'      => 48,
-]);
+session_start();
 
-include('config.php'); // Ensure $connection is set up for the database
+require_once __DIR__ . '/../../config/config.php'; // Ensure $connection is set up for the database
 
 // Redirect logged-in users to the dashboard
 if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
@@ -67,10 +61,10 @@ $connection = null;
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login</title>
-  <link rel="icon" type="image/png" href="http://localhost/salespilot/home_assets/img/favicon.png">
+  <link rel="icon" type="image/png" href="http://localhost:8000/home_assets/img/favicon.png">
   <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
-  <link href="http://localhost/salespilot/home_assets/css/nucleo-icons.css" rel="stylesheet">
-  <link href="http://localhost/salespilot/home_assets/css/material-dashboard.css?v=3.1.0" rel="stylesheet">
+  <link href="http://localhost:8000/home_assets/css/nucleo-icons.css" rel="stylesheet">
+  <link href="http://localhost:8000/home_assets/css/material-dashboard.css?v=3.1.0" rel="stylesheet">
 </head>
 
 <body class="bg-gray-200">
@@ -95,9 +89,9 @@ $connection = null;
                 <?php if (!empty($login_err)): ?>
                   <div class="alert alert-danger text-center"><?php echo $login_err; ?></div>
                 <?php endif; ?>
-                <form action="http://localhost/salespilot/loginpage.php" method="post" class="text-start">
+                <form action="http://localhost:8000/pages/auth/loginpage.php" method="post" class="text-start">
                   <div class="input-group input-group-outline my-3">
-                    <input type="text" name="username" class="form-control" placeholder="Username" value="<?php echo htmlspecialchars($username ?? '', ENT_QUOTES); ?>">
+                    <input type="text" name="username" class="form-control" placeholder="Username" value="">
                     <small class="text-danger"><?php echo $username_err; ?></small>
                   </div>
                   <div class="input-group input-group-outline mb-3">
@@ -110,11 +104,11 @@ $connection = null;
                   </div>
                   <div class="text-center">
                     <button type="submit" name="login" class="btn bg-gradient-primary w-100">Sign in</button>
-                    <button type="button" class="btn bg-gradient-primary w-100 mt-2" onclick="window.location.href='http://localhost/salespilot/recoverpwd.php'">Forgot Password</button>
+                    <button type="button" class="btn bg-gradient-primary w-100 mt-2" onclick="window.location.href='http://localhost:8000/recoverpwd.php'">Forgot Password</button>
                   </div>
                   <p class="mt-4 text-sm text-center">
                     Don't have an account?
-                    <a href="http://localhost/salespilot/sign-up.php" class="text-primary font-weight-bold">Sign up</a>
+                    <a href="http://localhost:8000/pages/auth/sign-up.php" class="text-primary font-weight-bold">Sign up</a>
                   </p>
                 </form>
               </div>
@@ -133,9 +127,9 @@ $connection = null;
       </footer>
     </div>
   </main>
-  <script src="http://localhost/salespilot/home_assets/js/core/popper.min.js"></script>
-  <script src="http://localhost/salespilot/home_assets/js/core/bootstrap.min.js"></script>
-  <script src="http://localhost/salespilot/home_assets/js/plugins/smooth-scrollbar.min.js"></script>
+  <script src="http://localhost:8000/home_assets/js/core/popper.min.js"></script>
+  <script src="http://localhost:8000/home_assets/js/core/bootstrap.min.js"></script>
+  <script src="http://localhost:8000/home_assets/js/plugins/smooth-scrollbar.min.js"></script>
 </body>
 
 </html>

@@ -4,17 +4,18 @@ if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 
-require __DIR__ . '/vendor/autoload.php'; // Include the Composer autoloader
-require '../../PHPMailer/src/PHPMailer.php';
-require '../../PHPMailer/src/SMTP.php';
-require '../../PHPMailer/src/Exception.php';
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
+
+// Include the Composer autoloader
+require_once __DIR__ . '/../../vendor/autoload.php';
+
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\SMTP;
 
 // Include the database connection settings
-include('config.php');
+require_once __DIR__ . '/../../config/config.php';
 
 // Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['signup'])) {
@@ -101,17 +102,17 @@ function handleFormSubmission($username, $password, $email, $confirmpassword, $c
                 // Send activation email
                 try {
                     $mail->isSMTP();
-                    $mail->Host = 'smtp.ionos.com';
-                    $mail->Port = 587;
+                    $mail->Host = 'smtp.gmail.com';
+                    $mail->Port = 465;
                     $mail->SMTPAuth = true;
-                    $mail->Username = 'admin@cybertrendhub.store'; // Replace with your Gmail email
+                    $mail->Username = 'olphemie@gmail.com'; // Replace with your Gmail email
                     $mail->Password = 'kokochulo@1987#'; // Replace with your app password
                     $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
 
-                    $mail->setFrom('admin@cybertrendhub.store', 'SalesPilot');
+                    $mail->setFrom('olphemie@gmail.com', 'SalesPilot');
                     $mail->addAddress($email);
                     $mail->Subject = 'Activate Your Account';
-                    $mail->Body = 'Hello,<br>Click the link below to activate your account:<br><a href="https://salespilot.cybertrendhub.store/activate.php?token=' . $activationCode . '">Activate Account</a>';
+                    $mail->Body = 'Hello,<br>Click the link below to activate your account:<br><a href="http://localhost:8000/activate.php?token=' . $activationCode . '">Activate Account</a>';
 
                     if ($mail->send()) {
                         header("Location: reg-success.html"); // Redirect after sending activation email
@@ -143,12 +144,12 @@ function handleFormSubmission($username, $password, $email, $confirmpassword, $c
       <title>Register</title>
       
       <!-- Favicon -->
-      <link rel="shortcut icon" href="https://salespilot.cybertrendhub.store/assets/images/favicon.ico" />
-      <link rel="stylesheet" href="https://salespilot.cybertrendhub.store/assets/css/backend-plugin.min.css">
-      <link rel="stylesheet" href="https://salespilot.cybertrendhub.store/assets/css/backend.css?v=1.0.0">
-      <link rel="stylesheet" href="https://salespilot.cybertrendhub.store/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css">
-      <link rel="stylesheet" href="https://salespilot.cybertrendhub.store/assets/vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css">
-      <link rel="stylesheet" href="https://salespilot.cybertrendhub.store/assets/vendor/remixicon/fonts/remixicon.css">  </head>
+      <link rel="shortcut icon" href="http://localhost:8000/assets/images/favicon.ico" />
+      <link rel="stylesheet" href="http://localhost:8000/assets/css/backend-plugin.min.css">
+      <link rel="stylesheet" href="http://localhost:8000/assets/css/backend.css?v=1.0.0">
+      <link rel="stylesheet" href="http://localhost:8000/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css">
+      <link rel="stylesheet" href="http://localhost:8000/assets/vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css">
+      <link rel="stylesheet" href="http://localhost:8000/assets/vendor/remixicon/fonts/remixicon.css">  </head>
   <body class=" ">
     <!-- loader Start -->
     <div id="loading">
@@ -194,13 +195,13 @@ function handleFormSubmission($username, $password, $email, $confirmpassword, $c
                                     </div>
                                   </form>
                                   <div class="text-center">
-                                  <button type="button" id="resetButton" class="btn bg-gradient-primary w-100 my-4 mb-2" onclick="window.location.href='https://salespilot.cybertrendhub.store/loginpage.php'">Login</button>
+                                  <button type="button" id="resetButton" class="btn bg-gradient-primary w-100 my-4 mb-2" onclick="window.location.href='http://localhost:8000/loginpage.php'">Login</button>
 
                                     </div>
                               </div>
                            </div>
                            <div class="col-lg-5 content-right">
-                              <img src="https://salespilot.cybertrendhub.store/assets/images/login/01.png" class="img-fluid image-right" alt="">
+                              <img src="http://localhost:8000/assets/images/login/01.png" class="img-fluid image-right" alt="">
                            </div>
                         </div>
                      </div>
@@ -212,12 +213,12 @@ function handleFormSubmission($username, $password, $email, $confirmpassword, $c
       </div>
     
     <!-- Backend Bundle JavaScript -->
-    <script src="https://salespilot.cybertrendhub.store/assets/js/backend-bundle.min.js"></script>
+    <script src="http://localhost:8000/assets/js/backend-bundle.min.js"></script>
     
     <!-- Table Treeview JavaScript -->
-    <script src="https://salespilot.cybertrendhub.store/assets/js/table-treeview.js"></script>
+    <script src="http://localhost:8000/assets/js/table-treeview.js"></script>
     
     <!-- app JavaScript -->
-    <script src="https://salespilot.cybertrendhub.store/assets/js/app.js"></script>
+    <script src="http://localhost:8000/assets/js/app.js"></script>
   </body>
 </html>

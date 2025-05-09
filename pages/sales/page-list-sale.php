@@ -1,13 +1,7 @@
 <?php
-session_start([
-    'cookie_lifetime' => 86400,
-    'cookie_secure'   => true,
-    'cookie_httponly' => true,
-    'use_strict_mode' => true,
-    'sid_length'      => 48,
-]);
+session_start();
 
-include('config.php'); // Includes database connection
+require_once __DIR__ . '/../../config/config.php'; // Includes database connection
 require __DIR__ .  '/vendor/autoload.php';
 require __DIR__ . ('/fpdf/fpdf.php');
 

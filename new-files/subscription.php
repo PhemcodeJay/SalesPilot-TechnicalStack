@@ -1,146 +1,56 @@
 <?php
-session_start();
+session_start([
+    'cookie_lifetime' => 86400,
+    'cookie_secure'   => true,
+    'cookie_httponly' => true,
+    'use_strict_mode' => true,
+    'sid_length'      => 48,
+]);
 
-require_once __DIR__ . '/../../config/config.php'; // Includes database connection
 
-// Check if username is set in session
+
+// Include database connection
+include('config.php');
+require 'vendor/autoload.php';
+
+// Check if user is logged in
 if (!isset($_SESSION["username"])) {
-    die("No username found in session.");
+    header("Location: loginpage.php");
+    exit;
 }
 
 $username = htmlspecialchars($_SESSION["username"]);
 
-// Retrieve user information from the users table
-$user_query = "SELECT id, username, email, date FROM users WHERE username = :username";
+// Fetch the logged-in user's information
+$user_query = "SELECT username, email, date, phone, location, user_image FROM users WHERE username = :username";
 $stmt = $connection->prepare($user_query);
 $stmt->bindParam(':username', $username);
 $stmt->execute();
 $user_info = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$user_info) {
-    die("User not found.");
+    throw new Exception("User not found.");
 }
 
 $email = htmlspecialchars($user_info['email']);
-$date = htmlspecialchars($user_info['date']);
-$user_id = $user_info['id'];
+$date = date('d F, Y', strtotime($user_info['date']));
+$location = htmlspecialchars($user_info['location']);
+$existing_image = htmlspecialchars($user_info['user_image']);
+$image_to_display = !empty($existing_image) ? $existing_image : 'uploads/user/default.png';
 
-// Check if the user is logged in
-if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        // Log session data for debugging
-        error_log("Session ID: " . session_id());
-        error_log("Session variables: " . print_r($_SESSION, true));
-
-        // Sanitize and validate form inputs
-        $name = htmlspecialchars(trim($_POST['name']));
-        $sale_status = htmlspecialchars(trim($_POST['sale_status']));
-        $sales_price = filter_var($_POST['sales_price'], FILTER_VALIDATE_FLOAT);
-        $total_price = filter_var($_POST['total_price'], FILTER_VALIDATE_FLOAT);
-        $sales_qty = filter_var($_POST['sales_qty'], FILTER_VALIDATE_INT);
-        $payment_status = htmlspecialchars(trim($_POST['payment_status']));
-        $sale_note = htmlspecialchars(trim($_POST['sale_note']));
-        $staff_name = htmlspecialchars(trim($_POST['staff_name']));
-        $customer_name = htmlspecialchars(trim($_POST['customer_name']));
-
-        // Validate required fields
-        if (empty($name) || empty($sale_status) || empty($staff_name) || empty($customer_name)) {
-            die("Required fields are missing.");
-        }
-
-        
-
-        try {
-            $connection->beginTransaction();
-
-            // Retrieve product_id from the products table
-            $check_product_query = "SELECT id FROM products WHERE name = :name";
-            $stmt = $connection->prepare($check_product_query);
-            $stmt->bindParam(':name', $name);
-            $stmt->execute();
-            $product_id = $stmt->fetchColumn();
-
-            if (!$product_id) {
-                throw new Exception("Product not found.");
-            }
-
-            // Retrieve staff_id from the staffs table
-            $check_staff_query = "SELECT staff_id FROM staffs WHERE staff_name = :staff_name";
-            $stmt = $connection->prepare($check_staff_query);
-            $stmt->bindParam(':staff_name', $staff_name);
-            $stmt->execute();
-            $staff_id = $stmt->fetchColumn();
-
-            if (!$staff_id) {
-                // Staff does not exist, so insert the new staff member
-                $insert_staff_query = "INSERT INTO staffs (staff_name) VALUES (:staff_name)";
-                $stmt = $connection->prepare($insert_staff_query);
-                $stmt->bindParam(':staff_name', $staff_name);
-                if ($stmt->execute()) {
-                    // Get the last inserted staff_id
-                    $staff_id = $connection->lastInsertId();
-                } else {
-                    throw new Exception("Failed to add new staff member.");
-                }  
-            };
-
-
-            // Retrieve customer_id from the customers table
-            $check_customer_query = "SELECT customer_id FROM customers WHERE customer_name = :customer_name";
-            $stmt = $connection->prepare($check_customer_query);
-            $stmt->bindParam(':customer_name', $customer_name);
-            $stmt->execute();
-            $customer_id = $stmt->fetchColumn();
-
-            if (!$customer_id) {
-                // Customer does not exist, so insert the new customer
-                $insert_customer_query = "INSERT INTO customers (customer_name) VALUES (:customer_name)";
-                $stmt = $connection->prepare($insert_customer_query);
-                $stmt->bindParam(':customer_name', $customer_name);
-                if ($stmt->execute()) {
-                    // Get the last inserted customer_id
-                    $customer_id = $connection->lastInsertId();
-                } else {
-                    throw new Exception("Failed to add new customer.");
-                }
-            }
-
-            // SQL query for inserting into sales table
-            $insert_sale_query = "INSERT INTO sales (product_id, name, staff_id, customer_id, total_price, sales_price, sales_qty, sale_note, sale_status, payment_status, user_id)
-                                  VALUES (:product_id, :name, :staff_id, :customer_id, :total_price, :sales_price, :sales_qty, :sale_note, :sale_status, :payment_status, :user_id)";
-            $stmt = $connection->prepare($insert_sale_query);
-            $stmt->bindParam(':product_id', $product_id);
-            $stmt->bindParam(':name', $name);
-            $stmt->bindParam(':staff_id', $staff_id);
-            $stmt->bindParam(':customer_id', $customer_id);
-            $stmt->bindParam(':total_price', $total_price);
-            $stmt->bindParam(':sales_price', $sales_price);
-            $stmt->bindParam(':sales_qty', $sales_qty);
-            $stmt->bindParam(':sale_note', $sale_note);
-            $stmt->bindParam(':sale_status', $sale_status);
-            $stmt->bindParam(':payment_status', $payment_status);
-            $stmt->bindParam(':user_id', $user_id);
-
-            // Execute and commit transaction
-            if ($stmt->execute()) {
-                $connection->commit();
-                header('Location: page-list-sale.php');
-                exit();
-            } else {
-                $connection->rollBack();
-                die("Sale insertion failed.");
-            }
-        } catch (Exception $e) {
-            $connection->rollBack();
-            error_log("Error: " . $e->getMessage());
-            die("Error: " . $e->getMessage());
-        }
-    }
-} else {
-    echo "Error: User not logged in.";
-}
 
 try {
+    // Process payment form submission
+    if ($_SERVER["REQUEST_METHOD"] === "POST") {
+        $amount = $_POST['payment_amount'] ?? 0;
+        $method = $_POST['payment_method'] ?? 'Cash';
+        $status = $_POST['payment_status'] ?? 'Pending';
+
+        $stmt = $connection->prepare("INSERT INTO payments (payment_amount, payment_method, payment_status) VALUES (?, ?, ?)");
+        $stmt->execute([$amount, $method, $status]);
+        $paymentId = $connection->lastInsertId();
+    }
+
     // Fetch inventory notifications with product images
     $inventoryQuery = $connection->prepare("
         SELECT i.product_name, i.available_stock, i.inventory_qty, i.sales_qty, p.image_path
@@ -149,10 +59,7 @@ try {
         WHERE i.available_stock < :low_stock OR i.available_stock > :high_stock
         ORDER BY i.last_updated DESC
     ");
-    $inventoryQuery->execute([
-        ':low_stock' => 10,
-        ':high_stock' => 1000,
-    ]);
+    $inventoryQuery->execute([':low_stock' => 10, ':high_stock' => 1000]);
     $inventoryNotifications = $inventoryQuery->fetchAll(PDO::FETCH_ASSOC);
 
     // Fetch reports notifications with product images
@@ -161,99 +68,267 @@ try {
                JSON_UNQUOTE(JSON_EXTRACT(revenue_by_product, '$.revenue')) AS revenue,
                p.image_path
         FROM reports r
-        JOIN products p ON JSON_UNQUOTE(JSON_EXTRACT(revenue_by_product, '$.product_name')) = p.name
-        WHERE JSON_UNQUOTE(JSON_EXTRACT(revenue_by_product, '$.revenue')) < :low_revenue OR 
-              JSON_UNQUOTE(JSON_EXTRACT(revenue_by_product, '$.revenue')) > :high_revenue
+        JOIN products p ON JSON_UNQUOTE(JSON_EXTRACT(revenue_by_product, '$.product_id')) = p.id
+        WHERE JSON_UNQUOTE(JSON_EXTRACT(revenue_by_product, '$.revenue')) > :high_revenue 
+           OR JSON_UNQUOTE(JSON_EXTRACT(revenue_by_product, '$.revenue')) < :low_revenue
         ORDER BY r.report_date DESC
     ");
-    $reportsQuery->execute([
-        ':low_revenue' => 1000,
-        ':high_revenue' => 5000,
-    ]);
+    $reportsQuery->execute([':high_revenue' => 10000, ':low_revenue' => 1000]);
     $reportsNotifications = $reportsQuery->fetchAll(PDO::FETCH_ASSOC);
 
-} catch (Exception $e) {
-    error_log("Error: " . $e->getMessage());
-    echo "Error: " . $e->getMessage();
-    exit();
-}
-
-try {
-    // Prepare and execute the query to fetch user information from the users table
-    $user_query = "SELECT id, username, date, email, phone, location, is_active, role, user_image FROM users WHERE username = :username";
-    $stmt = $connection->prepare($user_query);
-    $stmt->bindParam(':username', $username);
-    $stmt->execute();
-    
-    // Fetch user data
-    $user_info = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if ($user_info) {
-        // Retrieve user details and sanitize output
-        $email = htmlspecialchars($user_info['email']);
-        $date = date('d F, Y', strtotime($user_info['date']));
-        $location = htmlspecialchars($user_info['location']);
-        $user_id = htmlspecialchars($user_info['id']);
-        
-        // Check if a user image exists, use default if not
-        $existing_image = htmlspecialchars($user_info['user_image']);
-        $image_to_display = !empty($existing_image) ? $existing_image : 'uploads/user/default.png';
-
-    }
 } catch (PDOException $e) {
-    // Handle database errors
-    exit("Database error: " . $e->getMessage());
-} catch (Exception $e) {
-    // Handle user not found or other exceptions
-    exit("Error: " . $e->getMessage());
+    echo "Database connection failed: " . $e->getMessage();
+    exit;
 }
 
+
+// Handle PayPal Webhook if the request is POST
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Read the incoming webhook payload
+    $rawPayload = file_get_contents("php://input");
+    $payload = json_decode($rawPayload, true);
+
+    // Validate the event
+    if (!empty($payload) && isset($payload['event_type'])) {
+        // Event types to listen for
+        switch ($payload['event_type']) {
+            case 'BILLING.SUBSCRIPTION.ACTIVATED':
+                // Subscription activated logic
+                $subscriptionId = $payload['resource']['id'];
+                $planId = $payload['resource']['plan_id'];
+                $userId = getUserIdBySubscription($subscriptionId); // Replace with actual logic to get user ID from your database
+
+                // Determine the plan type based on the plan_id
+                $planName = getPlanName($planId);
+
+                if ($planName) {
+                    activateSubscription($subscriptionId, $planName, $userId);
+                } else {
+                    logError("Unknown plan ID: $planId");
+                }
+                break;
+
+            case 'PAYMENT.SALE.COMPLETED':
+                // Payment completed logic
+                $saleId = $payload['resource']['id'];
+                $amount = $payload['resource']['amount']['total'];
+                $userId = getUserIdByPayment($saleId); // Replace with actual logic to get user ID
+
+                // Insert payment information
+                recordPayment($saleId, $amount, $userId);
+                break;
+
+            // Add additional event types as needed
+            default:
+                logError("Unhandled event type: " . $payload['event_type']);
+                break;
+        }
+
+        // Respond with a success status to acknowledge receipt of the webhook
+        http_response_code(200);
+        echo json_encode(['status' => 'success']);
+        exit;
+    }
+
+    // Respond with an error status if the payload is invalid
+    http_response_code(400);
+    echo json_encode(['error' => 'Invalid payload']);
+    exit;
+}
+
+// Function to get the plan name based on plan_id
+function getPlanName($planId) {
+    $plans = [
+        'P-92V01000GH171635WM5HYGRQ' => 'starter',
+        'P-6TP94103DT2394623M5HYFKY' => 'business',
+        'P-7E210255TM029860GM5HYC4A' => 'enterprise'
+    ];
+    return $plans[$planId] ?? null;
+}
+
+// Function to activate the subscription
+function activateSubscription($subscriptionId, $planName, $userId) {
+    global $connection; // Use the global connection object
+
+    try {
+        // Insert subscription data
+        $query = "INSERT INTO subscriptions (user_id, subscription_plan, status) VALUES (?, ?, 'active')";
+        $stmt = $connection->prepare($query);
+        $stmt->bindParam(1, $userId, PDO::PARAM_INT);
+        $stmt->bindParam(2, $planName, PDO::PARAM_STR);
+
+        if ($stmt->execute()) {
+            // Log the subscription activation
+            file_put_contents('webhook_log.txt', "Subscription activated: ID = $subscriptionId, User ID = $userId, Plan = $planName\n", FILE_APPEND);
+
+            // Send email notification
+            $email = getUserEmailById($userId);
+            $subject = "Subscription Activated";
+            $message = "Dear User,\n\nYour subscription ($planName) has been activated successfully.\n\nThank you for subscribing!\n\nBest regards,\nYour Company";
+            $headers = "From: no-reply@yourcompany.com";
+            mail($email, $subject, $message, $headers);
+        } else {
+            logError("Subscription insert failed: " . json_encode($stmt->errorInfo()));
+        }
+    } catch (Exception $e) {
+        logError("Error activating subscription: " . $e->getMessage());
+    }
+}
+
+// Function to record payment
+function recordPayment($saleId, $amount, $userId) {
+    global $connection; // Use the global connection object
+
+    try {
+        // Insert payment data
+        $query = "INSERT INTO payments (user_id, payment_method, payment_amount, payment_status, sale_id) 
+                  VALUES (?, 'paypal', ?, 'completed', ?)";
+        $stmt = $connection->prepare($query);
+        $stmt->bindParam(1, $userId, PDO::PARAM_INT);
+        $stmt->bindParam(2, $amount, PDO::PARAM_STR);
+        $stmt->bindParam(3, $saleId, PDO::PARAM_STR);
+
+        if ($stmt->execute()) {
+            // Log the payment record
+            file_put_contents('webhook_log.txt', "Payment recorded: Sale ID = $saleId, Amount = $amount, User ID = $userId\n", FILE_APPEND);
+
+            // Send email notification
+            $email = getUserEmailById($userId);
+            $subject = "Payment Received";
+            $message = "Dear User,\n\nWe have received your payment of $amount.\n\nThank you for your support!\n\nBest regards,\nYour Company";
+            $headers = "From: no-reply@yourcompany.com";
+            mail($email, $subject, $message, $headers);
+        } else {
+            logError("Payment insert failed: " . json_encode($stmt->errorInfo()));
+        }
+    } catch (Exception $e) {
+        logError("Error recording payment: " . $e->getMessage());
+    }
+}
+
+// Function to log errors
+function logError($message) {
+    file_put_contents('webhook_log.txt', "Error: $message\n", FILE_APPEND);
+}
+
+// Function to get the user ID based on subscription ID (replace with your own logic)
+function getUserIdBySubscription($subscriptionId) {
+    global $connection;
+    $query = "SELECT user_id FROM subscriptions WHERE subscription_id = ?";
+    $stmt = $connection->prepare($query);
+    $stmt->bindParam(1, $subscriptionId, PDO::PARAM_STR);
+    $stmt->execute();
+    return $stmt->fetchColumn();
+}
+
+// Function to get the user ID based on sale ID (replace with your own logic)
+function getUserIdByPayment($saleId) {
+    global $connection;
+    $query = "SELECT user_id FROM payments WHERE sale_id = ?";
+    $stmt = $connection->prepare($query);
+    $stmt->bindParam(1, $saleId, PDO::PARAM_STR);
+    $stmt->execute();
+    return $stmt->fetchColumn();
+}
+
+// Function to get the user email by user ID (replace with your own logic)
+function getUserEmailById($userId) {
+    global $connection;
+    $query = "SELECT email FROM users WHERE id = ?";
+    $stmt = $connection->prepare($query);
+    $stmt->bindParam(1, $userId, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchColumn();
+}
 ?>
-
-
 
 <!doctype html>
 <html lang="en">
   <head>
-   <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-TXR1WFJ4GP"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-TXR1WFJ4GP');
-</script>
-
-<meta charset="utf-8">
+    <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-<meta content="" name="Boost your business efficiency with SalesPilot – the ultimate sales management app. Track leads, manage clients, and increase revenue effortlessly with our user-friendly platform.">
-  <meta content="" name="Sales productivity tools, Sales and Client management, Business efficiency tools">
-
-      <title>Add Sales</title>
+      <title>Subscriptions</title>
       
       <!-- Favicon -->
-      <link rel="shortcut icon" href="http://localhost:8000/assets/images/favicon-blue.ico" />
-      <link rel="stylesheet" href="http://localhost:8000/assets/css/backend-plugin.min.css">
-      <link rel="stylesheet" href="http://localhost:8000/assets/css/backend.css?v=1.0.0">
-      <link rel="stylesheet" href="http://localhost:8000/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css">
-      <link rel="stylesheet" href="http://localhost:8000/assets/vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css">
-      <link rel="stylesheet" href="http://localhost:8000/assets/vendor/remixicon/fonts/remixicon.css">  </head>
-  <body class="  ">
-    <!-- loader Start -->
-    <div id="loading">
-          <div id="loading-center">
-          </div>
-    </div>
-    <!-- loader END -->
+      <link rel="shortcut icon" href="https://salespilot.cybertrendhub.store/assets/images/favicon-blue.ico" />
+      <link rel="stylesheet" href="https://salespilot.cybertrendhub.store/assets/css/backend-plugin.min.css">
+      <link rel="stylesheet" href="https://salespilot.cybertrendhub.store/assets/css/backend.css?v=1.0.0">
+      <link rel="stylesheet" href="https://salespilot.cybertrendhub.store/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css">
+      <link rel="stylesheet" href="https://salespilot.cybertrendhub.store/assets/vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css">
+      <link rel="stylesheet" href="https://salespilot.cybertrendhub.store/assets/vendor/remixicon/fonts/remixicon.css">  </head>
+      <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .container {
+            width: 80%;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            text-align: center;
+            color: #007BFF;
+        }
+        label {
+            display: block;
+            margin: 0.5rem 0 0.2rem;
+            color: #555;
+        }
+        input, select {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        /* Modal styling */
+  .modal-content {
+      background-color: #fff;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 50%;
+      margin: auto;
+  }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+        }
+    </style>
+    
+      <body class="  ">
+    
     <!-- Wrapper Start -->
     <div class="wrapper">
       
       <div class="iq-sidebar  sidebar-default ">
           <div class="iq-sidebar-logo d-flex align-items-center justify-content-between">
-              <a href="http://localhost:8000/pages/auth/dashboard.php" class="header-logo">
-                  <img src="http://localhost:8000/logo/logonew1.jpg" class="img-fluid rounded-normal light-logo" alt="logo"><h5 class="logo-title light-logo ml-3">SalesPilot</h5>
+              <a href="https://salespilot.cybertrendhub.store/dashboard.php" class="header-logo">
+                  <img src="https://salespilot.cybertrendhub.store/logonew1.jpg" class="img-fluid rounded-normal light-logo" alt="logo"><h5 class="logo-title light-logo ml-3">SalesPilot</h5>
               </a>
               <div class="iq-menu-bt-sidebar ml-0">
                   <i class="las la-bars wrapper-menu"></i>
@@ -263,7 +338,7 @@ try {
               <nav class="iq-sidebar-menu">
                   <ul id="iq-sidebar-toggle" class="iq-menu">
                       <li class="">
-                          <a href="http://localhost:8000/pages/auth/dashboard.php" class="svg-icon">                        
+                          <a href="https://salespilot.cybertrendhub.store/dashboard.php" class="svg-icon">                        
                               <svg  class="svg-icon" id="p-dash1" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                   <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line>
                               </svg>
@@ -271,23 +346,23 @@ try {
                           </a>
                       </li>
                       <li class=" ">
-                          <a href="#name" class="collapsed" data-toggle="collapse" aria-expanded="false">
+                          <a href="#product" class="collapsed" data-toggle="collapse" aria-expanded="false">
                               <svg class="svg-icon" id="p-dash2" width="20" height="20"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle>
                                   <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
                               </svg>
-                              <span class="ml-4">Product</span>
+                              <span class="ml-4">Products</span>
                               <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                   <polyline points="10 15 15 20 20 15"></polyline><path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
                               </svg>
                           </a>
-                          <ul id="name" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                          <ul id="product" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
                               <li class="">
-                                  <a href="http://localhost:8000/page-list-product.php">
+                                  <a href="https://salespilot.cybertrendhub.store/page-list-product.php">
                                       <i class="las la-minus"></i><span>List Product</span>
                                   </a>
                               </li>
                               <li class="">
-                                  <a href="http://localhost:8000/page-add-product.php">
+                                  <a href="https://salespilot.cybertrendhub.store/page-add-product.php">
                                       <i class="las la-minus"></i><span>Add Product</span>
                                   </a>
                               </li>
@@ -305,11 +380,11 @@ try {
                           </a>
                           <ul id="category" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
                                   <li class="">
-                                          <a href="http://localhost:8000/page-list-category.php">
+                                          <a href="https://salespilot.cybertrendhub.store/page-list-category.php">
                                               <i class="las la-minus"></i><span>List Category</span>
                                           </a>
                                   </li>
-                                
+                                 
                           </ul>
                       </li>
                       <li class=" ">
@@ -324,12 +399,12 @@ try {
                           </a>
                           <ul id="sale" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
                                   <li class="">
-                                          <a href="http://localhost:8000/page-list-sale.php">
+                                          <a href="https://salespilot.cybertrendhub.store/page-list-sale.php">
                                               <i class="las la-minus"></i><span>List Sale</span>
                                           </a>
                                   </li>
-                                  <li class="active">
-                                          <a href="http://localhost:8000/page-add-sale.php">
+                                  <li class="">
+                                          <a href="https://salespilot.cybertrendhub.store/page-add-sale.php">
                                               <i class="las la-minus"></i><span>Add Sale</span>
                                           </a>
                                   </li>
@@ -347,12 +422,12 @@ try {
                           </a>
                           <ul id="purchase" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
                                   <li class="">
-                                          <a href="http://localhost:8000/page-list-expense.php">
-                                              <i class="las la-minus"></i><span>List Expenses</span>
+                                          <a href="https://salespilot.cybertrendhub.store/page-list-expense.php">
+                                              <i class="las la-minus"></i><span>List Expenses<pan>
                                           </a>
                                   </li>
                                   <li class="">
-                                          <a href="http://localhost:8000/page-add-expense.php">
+                                          <a href="https://salespilot.cybertrendhub.store/page-add-expense.php">
                                               <i class="las la-minus"></i><span>Add Expenses</span>
                                           </a>
                                   </li>
@@ -370,11 +445,11 @@ try {
                           </a>
                           <ul id="return" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
                                   <li class="">
-                                          <a href="http://localhost:8000/page-list-inventory.php">
+                                          <a href="https://salespilot.cybertrendhub.store/page-list-inventory.php">
                                               <i class="las la-minus"></i><span>List Inventory</span>
                                           </a>
                                   </li>
-                                  
+                              
                           </ul>
                       </li>
                       <li class=" ">
@@ -388,33 +463,33 @@ try {
                               </svg>
                           </a>
                           <ul id="people" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
-                                  <li class="">
-                                          <a href="http://localhost:8000/page-list-customers.php">
+                                  <li class="active">
+                                          <a href="https://salespilot.cybertrendhub.store/page-list-customers.php">
                                               <i class="las la-minus"></i><span>Customers</span>
                                           </a>
                                   </li>
                                   <li class="">
-                                          <a href="http://localhost:8000/page-add-customers.php">
+                                          <a href="https://salespilot.cybertrendhub.store/page-add-customers.php">
                                               <i class="las la-minus"></i><span>Add Customers</span>
                                           </a>
                                   </li>
                                   <li class="">
-                                          <a href="http://localhost:8000/page-list-staffs.php">
-                                              <i class="las la-minus"></i><span>Staffs</span>
+                                          <a href="https://salespilot.cybertrendhub.store/page-list-staffs.php">
+                                              <i class="las la-minus"></i><span>Staff</span>
                                           </a>
                                   </li>
                                   <li class="">
-                                          <a href="http://localhost:8000/page-add-staffs.php">
+                                          <a href="https://salespilot.cybertrendhub.store/page-add-staffs.php">
                                               <i class="las la-minus"></i><span>Add Staffs</span>
                                           </a>
                                   </li>
                                   <li class="">
-                                          <a href="http://localhost:8000/page-list-suppliers.php">
+                                          <a href="https://salespilot.cybertrendhub.store/page-list-suppliers.php">
                                               <i class="las la-minus"></i><span>Suppliers</span>
                                           </a>
                                   </li>
                                   <li class="">
-                                          <a href="http://localhost:8000/page-add-supplier.php">
+                                          <a href="https://salespilot.cybertrendhub.store/page-add-supplier.php">
                                               <i class="las la-minus"></i><span>Add Suppliers</span>
                                           </a>
                                   </li>
@@ -432,33 +507,37 @@ try {
                         </a>
                         <ul id="otherpage" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
                                 <li class="">
-                                        <a href="http://localhost:8000/analytics.php">
+                                        <a href="https://salespilot.cybertrendhub.store/analytics.php">
                                             <i class="las la-minus"></i><span>Charts</span>
                                         </a>
                                 </li>
                                 <li class="">
-                                        <a href="http://localhost:8000/analytics-report.php">
+                                        <a href="https://salespilot.cybertrendhub.store/analytics-report.php">
                                             <i class="las la-minus"></i><span>Reports</span>
                                         </a>
                                 </li>
                                 <li class="">
-                                        <a href="http://localhost:8000/sales-metrics.php">
-                                            <i class="las la-minus"></i><span>Category Metrics</span>
+                                        <a href="https://salespilot.cybertrendhub.store/sales-metrics.php">
+                                            <i class="las la-minus"></i><span>Sales Metrics</span>
                                         </a>
                                 </li>
                                 <li class="">
-                                        <a href="http://localhost:8000/inventory-metrics.php">
-                                            <i class="las la-minus"></i><span>Product Metrics</span>
+                                        <a href="https://salespilot.cybertrendhub.store/inventory-metrics.php">
+                                            <i class="las la-minus"></i><span>Inventory Metrics</span>
                                         </a>
                                 </li>
                                 
                         </ul>
                     </li>   
-                          </ul>
-                      </li>   
-                      
-                          
-              
+                     </ul>
+              </nav>
+              <div id="sidebar-bottom" class="position-relative sidebar-bottom">
+                  <div class="card border-none">
+                      <div class="card-body p-0">
+                         
+                      </div>
+                  </div>
+              </div>
               <div class="p-3"></div>
           </div>
           </div>      <div class="iq-top-navbar">
@@ -466,8 +545,8 @@ try {
               <nav class="navbar navbar-expand-lg navbar-light p-0">
                   <div class="iq-navbar-logo d-flex align-items-center justify-content-between">
                       <i class="ri-menu-line wrapper-menu"></i>
-                      <a href="http://localhost:8000/dashboard.php" class="header-logo">
-                          <img src="http://localhost:8000/logonew1.jpg" class="img-fluid rounded-normal" alt="logo">
+                      <a href="https://salespilot.cybertrendhub.store/dashboard.php" class="header-logo">
+                          <img src="https://salespilot.cybertrendhub.store/logonew1.jpg" class="img-fluid rounded-normal" alt="logo">
                           <h5 class="logo-title ml-3">SalesPilot</h5>
       
                       </a>
@@ -475,7 +554,7 @@ try {
                   <div class="iq-search-bar device-search">
                       <form action="#" class="searchbox">
                           <a class="search-link" href="#"><i class="ri-search-line"></i></a>
-                          <input type="text" class="text search-input" placeholder="Search here">
+                          <input type="text" class="text search-input" placeholder="Search here...">
                       </form>
                   </div>
                   <div class="d-flex align-items-center">
@@ -486,7 +565,7 @@ try {
                       </button>
                       <div class="collapse navbar-collapse" id="navbarSupportedContent">
                           <ul class="navbar-nav ml-auto navbar-list align-items-center">
-                              
+                             
                               <li>
                                   <a href="#" class="btn border add-btn shadow-none mx-2 d-none d-md-block"
                                       data-toggle="modal" data-target="#new-order"><i class="las la-plus mr-2"></i>New
@@ -501,13 +580,12 @@ try {
                                       <form action="#" class="searchbox p-2">
                                           <div class="form-group mb-0 position-relative">
                                               <input type="text" class="text search-input font-size-12"
-                                                  placeholder="type here to search">
+                                                  placeholder="type here to search...">
                                               <a href="#" class="search-link"><i class="las la-search"></i></a>
                                           </div>
                                       </form>
                                   </div>
                               </li>
-                              
                               <li class="nav-item nav-icon dropdown">
     <a href="#" class="search-toggle dropdown-toggle" id="dropdownMenuButton"
         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -582,7 +660,7 @@ try {
                         <p class="text-center">No reports notifications available.</p>
                     <?php endif; ?>
                 </div>
-                <a class="right-ic btn btn-primary btn-block position-relative p-2" href="page-list-inventory.php" role="button">
+                <a class="right-ic btn btn-primary btn-block position-relative p-2" href="#" role="button">
                     View All
                 </a>
             </div>
@@ -593,7 +671,7 @@ try {
                               <li class="nav-item nav-icon dropdown caption-content">
                                   <a href="#" class="search-toggle dropdown-toggle" id="dropdownMenuButton4"
                                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                      <img src="http://localhost:8000/<?php echo htmlspecialchars($image_to_display); ?>" 
+                                      <img src="https://salespilot.cybertrendhub.store/<?php echo htmlspecialchars($image_to_display); ?>" 
          alt="profile-img" class="rounded profile-img img-fluid avatar-70">
 
 
@@ -602,18 +680,18 @@ try {
                                       <div class="card shadow-none m-0">
                                           <div class="card-body p-0 text-center">
                                               <div class="media-body profile-detail text-center">
-                                                  <img src="http://localhost:8000/assets/images/page-img/profile-bg.jpg" alt="profile-bg"
+                                                  <img src="https://salespilot.cybertrendhub.store/assets/images/page-img/profile-bg.jpg" alt="profile-bg"
                                                       class="rounded-top img-fluid mb-4">
-                                                      <img src="http://localhost:8000/<?php echo htmlspecialchars($image_to_display); ?>" 
+                                                      <img src="https://salespilot.cybertrendhub.store/<?php echo htmlspecialchars($image_to_display); ?>" 
          alt="profile-img" class="rounded profile-img img-fluid avatar-70">
 
 
                                               </div>
                                               <div class="p-3">
-                                              <h5 class="mb-1"><?php echo $email; ?></h5>
-                                              <p class="mb-0">Since <?php echo $date; ?></p>
+                                                <h5 class="mb-1"><?php echo $email; ?></h5>
+                                                <p class="mb-0">Since <?php echo $date; ?></p>
                                                   <div class="d-flex align-items-center justify-content-center mt-3">
-                                                      <a href="http://localhost:8000/user-profile-edit.php" class="btn border mr-2">Profile</a>
+                                                      <a href="https://salespilot.cybertrendhub.store/user-profile-edit.php" class="btn border mr-2">Profile</a>
                                                       <a href="logout.php" class="btn border">Sign Out</a>
                                                   </div>
                                               </div>
@@ -650,116 +728,63 @@ try {
         </div>
     </div>
 </div>
-      </div>      <div class="content-page">
-     <div class="container-fluid add-form-list">
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between">
-                        <div class="header-title">
-                            <h4 class="card-title">Add Sale</h4>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                    <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST" enctype="multipart/form-data" data-toggle="validator">
-    
-                    <div class="row">
-                    <!-- Product Name -->
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="name">Product Name *</label>
-                            <input type="text" id="name" name="name" class="form-control" placeholder="Enter Product Name" required>
-                            <div class="help-block with-errors"></div>
-                        </div>
-                    </div>
+<div class="container">
+    <h1>Subscription</h1>
+    <form id="paymentForm" method="post" action="">
+    <div class="form-group">
+        <label for="method">Payment Method:</label>
+        <select id="method" name="method" required>
+            <option value="PayPal">PayPal</option>
+        </select>
+    </div>
 
-                    <!-- Price -->
-                    <div class="col-md-6">
-                      <div class="form-group">
-                          <label for="sales_price">Sales Price *</label>
-                          <input type="number" id="sales_price" name="sales_price" class="form-control" placeholder="Enter Unit Price" required step="0.01" min="0">
-                          <div class="help-block with-errors"></div>
-                      </div>
-                  </div>
+    <!-- Plan Selection -->
+    <div class="form-group" id="planSelection">
+        <label for="planSelect">Choose Your Plan:</label>
+        <select id="planSelect" name="planSelect" required>
+            <option value="P-7E210255TM029860GM5HYC4A">Enterprise</option>
+            <option value="P-6TP94103DT2394623M5HYFKY">Business</option>
+            <option value="P-92V01000GH171635WM5HYGRQ">Starter</option>
+        </select>
+    </div>
 
-                    <!-- Customer Name -->
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="customer_name">Customer *</label>
-                            <input type="text" id="customer_name" name="customer_name" class="form-control" placeholder="Enter Customer Name" required>
-                            <div class="help-block with-errors"></div>
-                        </div>
-                    </div>
+    <div id="paypal-button-container"></div>
+</form>
 
-                    <!-- Staff Name -->
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="staff_name">Staff *</label>
-                            <input type="text" id="staff_name" name="staff_name" class="form-control" placeholder="Enter Staff Name" required>
-                        </div>
-                    </div>
+<script src="https://www.paypal.com/sdk/js?client-id=AZYvY1lNRIJ-1uKK0buXQvvblKWefjilgca9HAG6YHTYkfFvriP-OHcrUZsv2RCohiWCl59FyvFUST-W&vault=true&intent=subscription"></script>
+<script>
+    // Function to dynamically render PayPal button based on selected plan
+    function renderPayPalButton(planId) {
+        paypal.Buttons({
+            style: {
+                shape: 'pill',
+                color: 'gold',
+                layout: 'vertical',
+                label: 'subscribe'
+            },
+            createSubscription: function(data, actions) {
+                return actions.subscription.create({
+                    plan_id: planId // Use the selected plan ID
+                });
+            },
+            onApprove: function(data, actions) {
+                alert(`Subscription successful! ID: ${data.subscriptionID}`);
+            }
+        }).render('#paypal-button-container'); // Render PayPal button in this container
+    }
 
-                    <!-- Sales Quantity -->
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="sales_qty">Sales Qty</label>
-                            <input type="number" id="sales_qty" name="sales_qty" class="form-control" placeholder="Sales Qty" min="0" required>
-                        </div>
-                    </div>
+    // Initial render for the default selected plan
+    const planSelect = document.getElementById('planSelect');
+    renderPayPalButton(planSelect.value);
 
-                    <!-- Total Price -->
-                    <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="total_price">Total Price</label>
-                        <input type="number" id="total_price" name="total_price" class="form-control" placeholder="Total Price" min="0" required readonly>
-                    </div>
-                </div>
+    // Re-render PayPal button when the plan changes
+    planSelect.addEventListener('change', function() {
+        document.getElementById('paypal-button-container').innerHTML = ''; // Clear the previous button
+        renderPayPalButton(this.value); // Render button for the newly selected plan
+    });
+</script>
 
-                    
 
-                    <!-- Sale Status -->
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="sale_status">Sale Status *</label>
-                            <select id="sale_status" name="sale_status" class="form-control" required>
-                                <option value="Completed">Completed</option>
-                                <option value="Pending">Pending</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Payment Status -->
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="payment_status">Payment Status *</label>
-                            <select id="payment_status" name="payment_status" class="form-control" required>
-                                <option value="Pending">Pending</option>
-                                <option value="Due">Due</option>
-                                <option value="Paid">Paid</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Sale Note -->
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label for="sale_note">Sale Note</label>
-                            <textarea id="sale_note" name="sale_note" class="form-control" placeholder="Additional sale notes (optional)" rows="2"></textarea>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Submit Button -->
-                <button type="submit" class="btn btn-primary mr-2">Add Sale</button>
-                <button type="reset" class="btn btn-danger">Reset</button>
-            </form>
-
-                    
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-        <!-- Page end  -->
     </div>
       </div>
     </div>
@@ -771,15 +796,14 @@ try {
                     <div class="row">
                         <div class="col-lg-6">
                             <ul class="list-inline mb-0">
-                                <li class="list-inline-item"><a href="http://localhost:8000/privacy-policy.php">Privacy Policy</a></li>
-                                <li class="list-inline-item"><a href="http://localhost:8000/terms-of-service.php">Terms of Use</a></li>
-                                <li class="list-inline-item"><a href="http://localhost:8000/subscription.php">Subscriptions</a></li>
-                                <li class="list-inline-item"><a href="http://localhost:8000/pay.php">Pay Now</a></li>
-                                <li class="list-inline-item"><a href="http://localhost:8000/help.html">Help</a></li>
+                                <li class="list-inline-item"><a href="https://salespilot.cybertrendhub.store/privacy-policy.php">Privacy Policy</a></li>
+                                <li class="list-inline-item"><a href="https://salespilot.cybertrendhub.store/terms-of-service.php">Terms of Use</a></li>
+                              <li class="list-inline-item"><a href="https://salespilot.cybertrendhub.store/subscription.php">Subscriptions</a></li>
+                                <li class="list-inline-item"><a href="https://salespilot.cybertrendhub.store/pay.php">Pay Now</a></li>
                             </ul>
                         </div>
                         <div class="col-lg-6 text-right">
-                            <span class="mr-1"><script>document.write(new Date().getFullYear())</script>©</span> <a href="http://localhost:8000/dashboard.php" class="">SalesPilot</a>.
+                            <span class="mr-1"><script>document.write(new Date().getFullYear())</script>©</span> <a href="https://salespilot.cybertrendhub.store/dashboard.php" class="">SalesPilot</a>.
                         </div>
                     </div>
                 </div>
@@ -787,13 +811,15 @@ try {
         </div>
     </footer>
     <!-- Backend Bundle JavaScript -->
-    <script src="http://localhost:8000/assets/js/backend-bundle.min.js"></script>
+    <script src="https://salespilot.cybertrendhub.store/assets/js/backend-bundle.min.js"></script>
     
     <!-- Table Treeview JavaScript -->
-    <script src="http://localhost:8000/assets/js/table-treeview.js"></script>
+    <script src="https://salespilot.cybertrendhub.store/assets/js/table-treeview.js"></script>
     
     <!-- app JavaScript -->
-    <script src="http://localhost:8000/assets/js/app.js"></script>
+    <script src="https://salespilot.cybertrendhub.store/assets/js/app.js"></script>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
 document.getElementById('createButton').addEventListener('click', function() {
     // Optional: Validate input or perform any additional checks here
@@ -801,17 +827,7 @@ document.getElementById('createButton').addEventListener('click', function() {
     // Redirect to invoice-form.php
     window.location.href = 'invoice-form.php';
 });
-</script>
-<script>
-    document.getElementById('sales_qty').addEventListener('input', calculateTotalPrice);
-    document.getElementById('sales_price').addEventListener('input', calculateTotalPrice);
 
-    function calculateTotalPrice() {
-        const qty = parseFloat(document.getElementById('sales_qty').value) || 0;
-        const price = parseFloat(document.getElementById('sales_price').value) || 0;
-        const total = qty * price;
-        document.getElementById('total_price').value = total.toFixed(2); // Formats to 2 decimal places
-    }
 </script>
-  </body>
+</body>
 </html>

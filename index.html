@@ -20,8 +20,8 @@
   <meta content="" name="Sales productivity tools, Sales and Client management, Business efficiency tools">
 
   <!-- Favicons -->
-  <link href="http://localhost/salespilot/home_assets/img/favicon.png" rel="icon">
-  <link href="http://localhost/salespilot/home_assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <link href="http://localhost:8000/home_assets/img/favicon.png" rel="icon">
+  <link href="http://localhost:8000/home_assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com" rel="preconnect">
@@ -30,14 +30,14 @@
 
   
   <!-- Vendor CSS Files -->
-  <link href="http://localhost/salespilot/home_assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="http://localhost/salespilot/home_assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-  <link href="http://localhost/salespilot/home_assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
-  <link href="http://localhost/salespilot/home_assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
-  <link href="http://localhost/salespilot/home_assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="http://localhost:8000/home_assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="http://localhost:8000/home_assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="http://localhost:8000/home_assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="http://localhost:8000/home_assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="http://localhost:8000/home_assets/vendor/aos/aos.css" rel="stylesheet">
 
   <!-- Template Main CSS File -->
-  <link href="http://localhost/salespilot/home_assets/css/main.css" rel="stylesheet">
+  <link href="http://localhost:8000/home_assets/css/main.css" rel="stylesheet">
 </head>
 
 <body class="index-page" data-bs-spy="scroll" data-bs-target="#navmenu">
@@ -50,10 +50,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <header id="header" class="header fixed-top d-flex align-items-center">
     <div class="container-fluid d-flex align-items-center justify-content-between">
 
-      <a href="http://localhost/salespilot/index.html" class="logo d-flex align-items-center me-auto me-xl-0">
+      <a href="http://localhost:8000/index.html" class="logo d-flex align-items-center me-auto me-xl-0">
         <!-- Uncomment the line below if you also wish to use an image logo -->
         <!-- <img src="/logonew.jpg" alt=""> -->
-        <img class="app-logo" src="http://localhost/salespilot/logonew.jpg" alt="Sales Pilot Logo">
+        <img class="app-logo" src="http://localhost:8000/logo/logonew.jpg" alt="Sales Pilot Logo">
         <h1>SalesPilot</h1>
         <span>.</span>
       </a>
@@ -61,16 +61,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <!-- Nav Menu -->
       <nav id="navmenu" class="navmenu">
         <ul>
-          <li><a href="http://localhost/salespilot/index.html#hero" class="active">Home</a></li>
-          <li><a href="http://localhost/salespilot/index.html#about">About</a></li>
-          <li><a href="http://localhost/salespilot/index.html#services">Services</a></li>
-          <li><a href="http://localhost/salespilot/index.html#contact">Contact</a></li>
+          <li><a href="http://localhost:8000/index.html#hero" class="active">Home</a></li>
+          <li><a href="http://localhost:8000/index.html#about">About</a></li>
+          <li><a href="http://localhost:8000/index.html#services">Services</a></li>
+          <li><a href="http://localhost:8000/index.html#contact">Contact</a></li>
         </ul>
 
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav><!-- End Nav Menu -->
 
-      <a class="btn-getstarted" href="http://localhost/salespilot/loginpage.php">Login</a>
+      <a class="btn-getstarted" href="http://localhost:8000/pages/auth/loginpage.php">Login</a>
 
     </div>
   </header><!-- End Header -->
@@ -80,7 +80,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- Hero Section - Home Page -->
     <section id="hero" class="hero">
 
-      <img src="http://localhost/salespilot/salespilotindex.jpg" alt="" data-aos="fade-in">
+      <img src="http://localhost:8000/logo/salespilotindex.jpg" alt="" data-aos="fade-in">
 
       <div class="container">
         <div class="row">
@@ -89,7 +89,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <p data-aos="fade-up" data-aos-delay="200">Inventory Management & Sales Analytics</p>
           </div>
           <div class="col-lg-5">
-            <form action="http://localhost/salespilot/sign-up.php" class="sign-up-form d-flex" data-aos="fade-up" data-aos-delay="300">
+            <form action="http://localhost:8000/pages/auth/sign-up.php" class="sign-up-form d-flex" data-aos="fade-up" data-aos-delay="300">
               <span class="form-control">Sign up and Activate Free Trial</span>
               <input type="submit" class="btn btn-primary" value="Sign up">
           </form> 
@@ -363,7 +363,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           </div>
 
           <div class="col-lg-6">
-            <form action="http://localhost/salespilot/feedback.php" method="post" class="php-email-form" data-aos="fade-up" data-aos-delay="200" id="feedback-form">
+            <form action="http://localhost:8000/feedback.php" method="post" class="php-email-form" data-aos="fade-up" data-aos-delay="200" id="feedback-form">
     <div class="row gy-4">
         <div class="col-md-6">
             <input type="text" name="name" class="form-control" placeholder="Your Name" required>
@@ -425,22 +425,22 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="col-lg-2 col-6 footer-links">
           <h4>SiteMap</h4>
           <ul>
-            <li><a href="http://localhost/salespilot/index.html#hero">Home</a></li>
-            <li><a href="http://localhost/salespilot/index.html#about">About us</a></li>
-            <li><a href="http://localhost/salespilot/index.html#services">Services</a></li>
-            <li><a href="http://localhost/salespilot/index.html#contact">Contact</a></li>
-            <li><a href="http://localhost/salespilot/terms-of-service.php">Terms of service</a></li>
-            <li><a href="http://localhost/salespilot/privacy-policy.php">Privacy policy</a></li>
+            <li><a href="http://localhost:8000/index.html#hero">Home</a></li>
+            <li><a href="http://localhost:8000/index.html#about">About us</a></li>
+            <li><a href="http://localhost:8000/index.html#services">Services</a></li>
+            <li><a href="http://localhost:8000/index.html#contact">Contact</a></li>
+            <li><a href="http://localhost:8000/terms-of-service.php">Terms of service</a></li>
+            <li><a href="http://localhost:8000/privacy-policy.php">Privacy policy</a></li>
           </ul>
         </div>
 
         <div class="col-lg-2 col-6 footer-links">
           <h4>Services</h4>
           <ul>
-            <li><a href="http://localhost/salespilot/index.html#services">Cybersecurity</a></li>
-            <li><a href="http://localhost/salespilot/index.html#services">Web Development</a></li>
-            <li><a href="http://localhost/salespilot/index.html#services">Cryptocurrency</a></li>
-            <li><a href="http://localhost/salespilot/index.html#services">ICT Solutions</a></li>
+            <li><a href="http://localhost:8000/index.html#services">Cybersecurity</a></li>
+            <li><a href="http://localhost:8000/index.html#services">Web Development</a></li>
+            <li><a href="http://localhost:8000/index.html#services">Cryptocurrency</a></li>
+            <li><a href="http://localhost:8000/index.html#services">ICT Solutions</a></li>
           </ul>
         </div>
 
@@ -477,16 +477,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </div>
 
   <!-- Vendor JS Files -->
-  <script src="http://localhost/salespilot/home_assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="http://localhost/salespilot/home_assets/vendor/glightbox/js/glightbox.min.js"></script>
-  <script src="http://localhost/salespilot/home_assets/vendor/purecounter/purecounter_vanilla.js"></script>
-  <script src="http://localhost/salespilot/home_assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
-  <script src="http://localhost/salespilot/home_assets/vendor/swiper/swiper-bundle.min.js"></script>
-  <script src="http://localhost/salespilot/home_assets/vendor/aos/aos.js"></script>
-  <script src="http://localhost/salespilot/home_assets/vendor/php-email-form/validate.js"></script>
+  <script src="http://localhost:8000/home_assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="http://localhost:8000/home_assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="http://localhost:8000/home_assets/vendor/purecounter/purecounter_vanilla.js"></script>
+  <script src="http://localhost:8000/home_assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="http://localhost:8000/home_assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="http://localhost:8000/home_assets/vendor/aos/aos.js"></script>
+  <script src="http://localhost:8000/home_assets/vendor/php-email-form/validate.js"></script>
 
   <!-- Template Main JS File -->
-  <script src="http://localhost/salespilot/home_assets/js/main.js"></script>
+  <script src="http://localhost:8000/home_assets/js/main.js"></script>
 
 </body>
 
