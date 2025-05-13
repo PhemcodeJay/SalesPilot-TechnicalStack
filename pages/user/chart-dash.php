@@ -1,6 +1,6 @@
 <?php
 header('Content-Type: application/json');
-require 'config.php'; // Include your database connection script
+require_once __DIR__ . '/../../config/config.php'; // Include your database connection script
 
 // Retrieve the time range from the request
 $range = $_GET['range'] ?? 'yearly';

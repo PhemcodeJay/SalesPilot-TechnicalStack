@@ -316,7 +316,7 @@ $connection = null;
                                   </a>
                               </li>
                               <li class="">
-                                  <a href="http://localhost:8000/page-add-product.php">
+                                  <a href="http://localhost:8000/pages/product/page-add-product.php">
                                       <i class="las la-minus"></i><span>Add Product</span>
                                   </a>
                               </li>
@@ -334,7 +334,7 @@ $connection = null;
                           </a>
                           <ul id="category" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
                                   <li class="">
-                                          <a href="http://localhost:8000/page-list-category.php">
+                                          <a href="http://localhost:8000/pages/product/page-list-category.php">
                                               <i class="las la-minus"></i><span>List Category</span>
                                           </a>
                                   </li>
@@ -353,12 +353,12 @@ $connection = null;
                           </a>
                           <ul id="sale" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
                                   <li class="">
-                                          <a href="http://localhost:8000/page-list-sale.php">
+                                          <a href="http://localhost:8000/pages/sales/page-list-sale.php">
                                               <i class="las la-minus"></i><span>List Sale</span>
                                           </a>
                                   </li>
                                   <li class="">
-                                          <a href="http://localhost:8000/page-add-sale.php">
+                                          <a href="http://localhost:8000/pages/sales/page-add-sale.php">
                                               <i class="las la-minus"></i><span>Add Sale</span>
                                           </a>
                                   </li>
@@ -376,12 +376,12 @@ $connection = null;
                           </a>
                           <ul id="purchase" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
                                   <li class="">
-                                          <a href="http://localhost:8000/page-list-expense.php">
+                                          <a href="http://localhost:8000/page/expenses/page-list-expense.php">
                                               <i class="las la-minus"></i><span>List Expense</span>
                                           </a>
                                   </li>
                                   <li class="">
-                                          <a href="http://localhost:8000/page-add-expense.php">
+                                          <a href="http://localhost:8000/page/expenses/page-add-expense.php">
                                               <i class="las la-minus"></i><span>Add Expense</span>
                                           </a>
                                   </li>
@@ -399,7 +399,7 @@ $connection = null;
                           </a>
                           <ul id="return" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
                                   <li class="">
-                                          <a href="http://localhost:8000/page-list-inventory.php">
+                                          <a href="http://localhost:8000/pages/product/page-list-inventory.php">
                                               <i class="las la-minus"></i><span>List Inventory</span>
                                           </a>
                                   </li>
@@ -418,32 +418,32 @@ $connection = null;
                           </a>
                           <ul id="people" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
                                   <li class="">
-                                          <a href="http://localhost:8000/page-list-customers.php">
+                                          <a href="http://localhost:8000/pages/people/page-list-customers.php">
                                               <i class="las la-minus"></i><span>Customers</span>
                                           </a>
                                   </li>
                                   <li class="">
-                                          <a href="http://localhost:8000/page-add-customers.php">
+                                          <a href="http://localhost:8000/pages/people/page-add-customers.php">
                                               <i class="las la-minus"></i><span>Add Customers</span>
                                           </a>
                                   </li>
                                   <li class="">
-                                          <a href="http://localhost:8000/page-list-staffs.php">
+                                          <a href="http://localhost:8000/pages/people/page-list-staffs.php">
                                               <i class="las la-minus"></i><span>Staffs</span>
                                           </a>
                                   </li>
                                   <li class="">
-                                          <a href="http://localhost:8000/page-add-staffs.php">
+                                          <a href="http://localhost:8000/pages/people/-add-staffs.php">
                                               <i class="las la-minus"></i><span>Add Staffs</span>
                                           </a>
                                   </li>
                                   <li class="">
-                                          <a href="http://localhost:8000/page-list-suppliers.php">
+                                          <a href="http://localhost:8000/pages/people/page-list-suppliers.php">
                                               <i class="las la-minus"></i><span>Suppliers</span>
                                           </a>
                                   </li>
                                   <li class="">
-                                          <a href="http://localhost:8000/page-add-supplier.php">
+                                          <a href="http://localhost:8000/pages/people/page-add-supplier.php">
                                               <i class="las la-minus"></i><span>Add Suppliers</span>
                                           </a>
                                   </li>
@@ -461,22 +461,22 @@ $connection = null;
                         </a>
                         <ul id="otherpage" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
                                 <li class="">
-                                        <a href="http://localhost:8000/analytics.php">
+                                        <a href="http://localhost:8000/pages/analytics/analytics.php">
                                             <i class="las la-minus"></i><span>Charts</span>
                                         </a>
                                 </li>
                                 <li class="">
-                                        <a href="http://localhost:8000/analytics-report.php">
+                                        <a href="http://localhost:8000/pages/analytics/analytics-report.php">
                                             <i class="las la-minus"></i><span>Reports</span>
                                         </a>
                                 </li>
                                 <li class="">
-                                        <a href="http://localhost:8000/sales-metrics.php">
+                                        <a href="http://localhost:8000/pages/analytic/ssales-metrics.php">
                                             <i class="las la-minus"></i><span>Category Metrics</span>
                                         </a>
                                 </li>
                                 <li class="">
-                                        <a href="http://localhost:8000/inventory-metrics.php">
+                                        <a href="http://localhost:8000/pages/analytics/inventory-metrics.php">
                                             <i class="las la-minus"></i><span>Product Metrics</span>
                                         </a>
                                 </li>
@@ -490,8 +490,8 @@ $connection = null;
               <nav class="navbar navbar-expand-lg navbar-light p-0">
                   <div class="iq-navbar-logo d-flex align-items-center justify-content-between">
                       <i class="ri-menu-line wrapper-menu"></i>
-                      <a href="http://localhost:8000/dashboard.php" class="header-logo">
-                          <img src="http://localhost:8000/logonew1.jpg" class="img-fluid rounded-normal" alt="logo">
+                      <a href="http://localhost:8000/pages/user/dashboard.php" class="header-logo">
+                          <img src="http://localhost:8000/logo/logonew1.jpg" class="img-fluid rounded-normal" alt="logo">
                           <h5 class="logo-title ml-3">SalesPilot</h5>
       
                       </a>
@@ -516,10 +516,7 @@ $connection = null;
                                       data-toggle="modal" data-target="#new-order"><i class="las la-plus mr-2"></i>New
                                       Invoice</a>
                               </li>
-                              <li>
-                                  <a href="activate_trial.php" class="btn border add-btn shadow-none mx-2 d-none d-md-block"
-                                       data-target="#new-order"><i class="las la-plus mr-2"></i>Get Free Trial</a>
-                              </li>
+                              
                               <li class="nav-item nav-icon search-content">
                                   <a href="#" class="search-toggle rounded" id="dropdownSearch" data-toggle="dropdown"
                                       aria-haspopup="true" aria-expanded="false">
@@ -637,7 +634,7 @@ $connection = null;
                                           <div class="card-body p-0 text-center">
                                           <div class="media-body profile-detail text-center">
                                                     <!-- Background Image -->
-                                                    <img src="http://localhost:8000/assets/images/page-img/profile-bg.jpg" alt="profile-bg"
+                                                    <img src="http://localhost:8000/assets/images/login/sign-bg.jpg" alt="profile-bg"
                                                         class="rounded-top img-fluid mb-4">
                                                     
                                                         <img src="http://localhost:8000/<?php echo htmlspecialchars($image_to_display); ?>" 
@@ -650,7 +647,7 @@ $connection = null;
                                                   <h5 class="mb-1"><?php echo $email; ?></h5>
                                                   <p class="mb-0">Since<?php echo $date; ?></p>
                                                   <div class="d-flex align-items-center justify-content-center mt-3">
-                                                      <a href="http://localhost:8000/user-profile-edit.php" class="btn border mr-2">Profile</a>
+                                                      <a href="http://localhost:8000/pages/user/user-profile-edit.php" class="btn border mr-2">Profile</a>
                                                       <a href="logout.php" class="btn border">Sign Out</a>
                                                   </div>
                                               </div>
@@ -840,7 +837,7 @@ $connection = null;
                 <h4 class="card-title mb-0">Best Item All Time</h4>
             </div>
             <div class="card-header-toolbar d-flex align-items-center">
-                <div><a href="page-list-sale.php" class="btn btn-primary view-btn font-size-14">View All</a></div>
+                <div><a href="http://localhost:8000/pages/sales/page-list-sale.php" class="btn btn-primary view-btn font-size-14">View All</a></div>
             </div>
         </div>
     </div>
@@ -958,15 +955,15 @@ $connection = null;
                     <div class="row">
                         <div class="col-lg-6">
                             <ul class="list-inline mb-0">
-                                <li class="list-inline-item"><a href="http://localhost:8000/privacy-policy.php">Privacy Policy</a></li>
-                                <li class="list-inline-item"><a href="http://localhost:8000/terms-of-service.php">Terms of Use</a></li>
-                                <li class="list-inline-item"><a href="http://localhost:8000/subscription.php">Subscriptions</a></li>
-                                <li class="list-inline-item"><a href="http://localhost:8000/pay.php">Pay Now</a></li>
-                                <li class="list-inline-item"><a href="http://localhost:8000/help.html">Help</a></li>
+                                <li class="list-inline-item"><a href="http://localhost:8000/pages/user/privacy-policy.php">Privacy Policy</a></li>
+                                <li class="list-inline-item"><a href="http://localhost:8000/pages/user/terms-of-service.php">Terms of Use</a></li>
+                                <li class="list-inline-item"><a href="http://localhost:8000/pages/payment/subscription.php">Subscriptions</a></li>
+                                <li class="list-inline-item"><a href="http://localhost:8000/pages/payment/pay.php">Pay Now</a></li>
+                                <li class="list-inline-item"><a href="http://localhost:8000/pages/user/help.html">Help</a></li>
                             </ul>
                         </div>
                         <div class="col-lg-6 text-right">
-                            <span class="mr-1"><script>document.write(new Date().getFullYear())</script>©</span> <a href="http://localhost:8000/dashboard.php" class="">SalesPilot</a>.
+                            <span class="mr-1"><script>document.write(new Date().getFullYear())</script>©</span> <a href="http://localhost:8000/pages/user/dashboard.php" class="">SalesPilot</a>.
                         </div>
                     </div>
                 </div>
