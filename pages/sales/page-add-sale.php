@@ -1,6 +1,6 @@
 <?php
 session_start();
-
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
 require_once __DIR__ . '/../../config/config.php'; // Includes database connection
 
 // Check if username is set in session
@@ -252,7 +252,7 @@ try {
       
       <div class="iq-sidebar  sidebar-default ">
           <div class="iq-sidebar-logo d-flex align-items-center justify-content-between">
-              <a href="http://localhost:8000/pages/auth/dashboard.php" class="header-logo">
+              <a href="http://localhost:8000/pages/user/dashboard.php" class="header-logo">
                   <img src="http://localhost:8000/logo/logonew1.jpg" class="img-fluid rounded-normal light-logo" alt="logo"><h5 class="logo-title light-logo ml-3">SalesPilot</h5>
               </a>
               <div class="iq-menu-bt-sidebar ml-0">
@@ -263,7 +263,7 @@ try {
               <nav class="iq-sidebar-menu">
                   <ul id="iq-sidebar-toggle" class="iq-menu">
                       <li class="">
-                          <a href="http://localhost:8000/pages/auth/dashboard.php" class="svg-icon">                        
+                          <a href="http://localhost:8000/pages/user/dashboard.php" class="svg-icon">                        
                               <svg  class="svg-icon" id="p-dash1" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                   <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line>
                               </svg>
@@ -282,12 +282,12 @@ try {
                           </a>
                           <ul id="name" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
                               <li class="">
-                                  <a href="http://localhost:8000/page-list-product.php">
+                                  <a href="http://localhost:8000/pages/product/page-list-product.php">
                                       <i class="las la-minus"></i><span>List Product</span>
                                   </a>
                               </li>
                               <li class="">
-                                  <a href="http://localhost:8000/page-add-product.php">
+                                  <a href="http://localhost:8000/pages/product/page-add-product.php">
                                       <i class="las la-minus"></i><span>Add Product</span>
                                   </a>
                               </li>
@@ -305,7 +305,7 @@ try {
                           </a>
                           <ul id="category" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
                                   <li class="">
-                                          <a href="http://localhost:8000/page-list-category.php">
+                                          <a href="http://localhost:8000/pages/product/page-list-category.php">
                                               <i class="las la-minus"></i><span>List Category</span>
                                           </a>
                                   </li>
@@ -324,12 +324,12 @@ try {
                           </a>
                           <ul id="sale" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
                                   <li class="">
-                                          <a href="http://localhost:8000/page-list-sale.php">
+                                          <a href="http://localhost:8000/pages/sales/page-list-sale.php">
                                               <i class="las la-minus"></i><span>List Sale</span>
                                           </a>
                                   </li>
                                   <li class="active">
-                                          <a href="http://localhost:8000/page-add-sale.php">
+                                          <a href="http://localhost:8000/pages/sales/page-add-sale.php">
                                               <i class="las la-minus"></i><span>Add Sale</span>
                                           </a>
                                   </li>
@@ -347,12 +347,12 @@ try {
                           </a>
                           <ul id="purchase" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
                                   <li class="">
-                                          <a href="http://localhost:8000/page-list-expense.php">
+                                          <a href="http://localhost:8000/pages/expenses/page-list-expense.php">
                                               <i class="las la-minus"></i><span>List Expenses</span>
                                           </a>
                                   </li>
                                   <li class="">
-                                          <a href="http://localhost:8000/page-add-expense.php">
+                                          <a href="http://localhost:8000/pages/expenses/page-add-expense.php">
                                               <i class="las la-minus"></i><span>Add Expenses</span>
                                           </a>
                                   </li>
@@ -370,7 +370,7 @@ try {
                           </a>
                           <ul id="return" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
                                   <li class="">
-                                          <a href="http://localhost:8000/page-list-inventory.php">
+                                          <a href="http://localhost:8000/pages/product/page-list-inventory.php">
                                               <i class="las la-minus"></i><span>List Inventory</span>
                                           </a>
                                   </li>
@@ -389,32 +389,32 @@ try {
                           </a>
                           <ul id="people" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
                                   <li class="">
-                                          <a href="http://localhost:8000/page-list-customers.php">
+                                          <a href="http://localhost:8000/pages/people/page-list-customers.php">
                                               <i class="las la-minus"></i><span>Customers</span>
                                           </a>
                                   </li>
                                   <li class="">
-                                          <a href="http://localhost:8000/page-add-customers.php">
+                                          <a href="http://localhost:8000/pages/people/page-add-customers.php">
                                               <i class="las la-minus"></i><span>Add Customers</span>
                                           </a>
                                   </li>
                                   <li class="">
-                                          <a href="http://localhost:8000/page-list-staffs.php">
+                                          <a href="http://localhost:8000/pages/people/page-list-staffs.php">
                                               <i class="las la-minus"></i><span>Staffs</span>
                                           </a>
                                   </li>
                                   <li class="">
-                                          <a href="http://localhost:8000/page-add-staffs.php">
+                                          <a href="http://localhost:8000/pages/people/page-add-staffs.php">
                                               <i class="las la-minus"></i><span>Add Staffs</span>
                                           </a>
                                   </li>
                                   <li class="">
-                                          <a href="http://localhost:8000/page-list-suppliers.php">
+                                          <a href="http://localhost:8000/pages/people/page-list-suppliers.php">
                                               <i class="las la-minus"></i><span>Suppliers</span>
                                           </a>
                                   </li>
                                   <li class="">
-                                          <a href="http://localhost:8000/page-add-supplier.php">
+                                          <a href="http://localhost:8000/pages/people/page-add-supplier.php">
                                               <i class="las la-minus"></i><span>Add Suppliers</span>
                                           </a>
                                   </li>
@@ -432,22 +432,22 @@ try {
                         </a>
                         <ul id="otherpage" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
                                 <li class="">
-                                        <a href="http://localhost:8000/analytics.php">
+                                        <a href="http://localhost:8000/pages/analytics/analytics.php">
                                             <i class="las la-minus"></i><span>Charts</span>
                                         </a>
                                 </li>
                                 <li class="">
-                                        <a href="http://localhost:8000/analytics-report.php">
+                                        <a href="http://localhost:8000/pages/analytics/analytics-report.php">
                                             <i class="las la-minus"></i><span>Reports</span>
                                         </a>
                                 </li>
                                 <li class="">
-                                        <a href="http://localhost:8000/sales-metrics.php">
+                                        <a href="http://localhost:8000/pages/analytics/sales-metrics.php">
                                             <i class="las la-minus"></i><span>Category Metrics</span>
                                         </a>
                                 </li>
                                 <li class="">
-                                        <a href="http://localhost:8000/inventory-metrics.php">
+                                        <a href="http://localhost:8000/pages/analytics/inventory-metrics.php">
                                             <i class="las la-minus"></i><span>Product Metrics</span>
                                         </a>
                                 </li>
@@ -466,8 +466,8 @@ try {
               <nav class="navbar navbar-expand-lg navbar-light p-0">
                   <div class="iq-navbar-logo d-flex align-items-center justify-content-between">
                       <i class="ri-menu-line wrapper-menu"></i>
-                      <a href="http://localhost:8000/dashboard.php" class="header-logo">
-                          <img src="http://localhost:8000/logonew1.jpg" class="img-fluid rounded-normal" alt="logo">
+                      <a href="http://localhost:8000/pages/user/dashboard.php" class="header-logo">
+                          <img src="http://localhost:8000/logo/logonew1.jpg" class="img-fluid rounded-normal" alt="logo">
                           <h5 class="logo-title ml-3">SalesPilot</h5>
       
                       </a>
@@ -613,8 +613,8 @@ try {
                                               <h5 class="mb-1"><?php echo $email; ?></h5>
                                               <p class="mb-0">Since <?php echo $date; ?></p>
                                                   <div class="d-flex align-items-center justify-content-center mt-3">
-                                                      <a href="http://localhost:8000/user-profile-edit.php" class="btn border mr-2">Profile</a>
-                                                      <a href="logout.php" class="btn border">Sign Out</a>
+                                                      <a href="http://localhost:8000/pages/user/user-profile-edit.php" class="btn border mr-2">Profile</a>
+                                                      <a href="http://localhost:8000/pages/auth/logout.php" class="btn border">Sign Out</a>
                                                   </div>
                                               </div>
                                           </div>
@@ -771,15 +771,15 @@ try {
                     <div class="row">
                         <div class="col-lg-6">
                             <ul class="list-inline mb-0">
-                                <li class="list-inline-item"><a href="http://localhost:8000/privacy-policy.php">Privacy Policy</a></li>
-                                <li class="list-inline-item"><a href="http://localhost:8000/terms-of-service.php">Terms of Use</a></li>
-                                <li class="list-inline-item"><a href="http://localhost:8000/subscription.php">Subscriptions</a></li>
-                                <li class="list-inline-item"><a href="http://localhost:8000/pay.php">Pay Now</a></li>
-                                <li class="list-inline-item"><a href="http://localhost:8000/help.html">Help</a></li>
+                                <li class="list-inline-item"><a href="http://localhost:8000/pages/user/privacy-policy.php">Privacy Policy</a></li>
+                                <li class="list-inline-item"><a href="http://localhost:8000/pages/user/terms-of-service.php">Terms of Use</a></li>
+                                <li class="list-inline-item"><a href="http://localhost:8000/pages/payment/subscription.php">Subscriptions</a></li>
+                                <li class="list-inline-item"><a href="http://localhost:8000/pages/payment/pay.php">Pay Now</a></li>
+                                <li class="list-inline-item"><a href="http://localhost:8000/pages/user/help.html">Help</a></li>
                             </ul>
                         </div>
                         <div class="col-lg-6 text-right">
-                            <span class="mr-1"><script>document.write(new Date().getFullYear())</script>©</span> <a href="http://localhost:8000/dashboard.php" class="">SalesPilot</a>.
+                            <span class="mr-1"><script>document.write(new Date().getFullYear())</script>©</span> <a href="http://localhost:8000/pages/user/dashboard.php" class="">SalesPilot</a>.
                         </div>
                     </div>
                 </div>
