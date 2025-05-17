@@ -1,9 +1,9 @@
 <?php
 session_start([]);
-
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
 require 'config.php'; // Database connection
-require 'vendor/autoload.php';
-require 'fpdf/fpdf.php';
+require __DIR__ .  '/../vendor/autoload.php';
+require __DIR__ . ('/../fpdf/fpdf.php');
 
 // Sanitize and validate input parameters
 function sanitizeInput($input) {
