@@ -120,6 +120,89 @@ try {
     <link rel="stylesheet" href="http://localhost:8000/assets/vendor/remixicon/fonts/remixicon.css"> 
     <script src="http://localhost:8000/asset/chart.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #d3e3f3; /* Light gray background for the page */
+    color: #333;
+    line-height: 1.6;
+}
+
+.dashboard {
+    width: 90%;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f8fbfc; /* White background for the dashboard */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(250, 247, 247, 0.1);
+}
+
+.control-panel {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.control-panel h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    color: #343a40; /* Darker text color for contrast */
+}
+
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 20px;
+}
+
+.chart-container {
+    background-color: #f4f5f8; /* White background for each chart */
+    border-radius: 30px;
+    box-shadow: 0 4px 8px rgba(248, 242, 242, 0.1);
+    padding: 30px;
+}
+
+.chart-header {
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.chart-header h2 {
+    font-size: 1.5em;
+    color: #495057; /* Slightly lighter text color */
+}
+
+.date-range-buttons {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.date-range-buttons button {
+    background-color: #328ee9; /* Blue for default */
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    margin: 0 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.date-range-buttons button:hover {
+    background-color: #eba82dcb; /* Darker blue on hover */
+}
+
+
+canvas {
+    max-width: 100%;
+    height: 300px;
+}
+</style>
 </head>
 <body>
     
