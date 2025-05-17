@@ -1,13 +1,8 @@
 <?php
-session_start([
-    'cookie_lifetime' => 86400,
-    'cookie_secure'   => true,
-    'cookie_httponly' => true,
-    'use_strict_mode' => true,
-    'sid_length'      => 48,
-]);
+session_start([]);
 
-require 'config.php'; // Include database connection script
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
+require_once __DIR__ . '/../../config/config.php';// Include database connection script
 
 try {
     // Ensure the user is logged in

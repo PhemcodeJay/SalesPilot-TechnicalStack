@@ -7,7 +7,9 @@ session_start([
     'sid_length'      => 48,
 ]);
 
-include('config.php'); // Includes the updated config.php with the $connection variable
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
+require_once __DIR__ . '/../../config/config.php'; // Includes database connection
+
 
 // Check if username is set in session
 if (!isset($_SESSION["username"])) {

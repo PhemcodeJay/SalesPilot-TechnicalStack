@@ -1,7 +1,10 @@
 <?php
 session_start([]);
 
-include('config.php'); // Includes the updated config.php with the $connection variable
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
+require_once __DIR__ . '/../../config/config.php'; // Includes database connection
+require __DIR__ .  '/../../vendor/autoload.php';
+require __DIR__ . ('/../../fpdf/fpdf.php');// Includes the updated config.php with the $connection variable
 
 
 

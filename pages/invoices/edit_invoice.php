@@ -1,6 +1,7 @@
 <?php
 // Include the database connection
-require 'config.php'; // Ensure this file contains your PDO connection settings
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
+require_once __DIR__ . '/../../config/config.php'; // Ensure this file contains your PDO connection settings
 
 // Initialize variables
 $message = '';
