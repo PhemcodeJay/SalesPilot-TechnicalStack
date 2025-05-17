@@ -72,7 +72,7 @@ if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
             
             // Check if a user image exists, use default if not
             $existing_image = htmlspecialchars($user_info['user_image']);
-            $image_to_display = !empty($existing_image) ? $existing_image : '/../uploads/user/default.png';
+            $image_to_display = !empty($existing_image) ? $existing_image : '/uploads/user/default.png';
     
             // Determine the time of day for personalized greeting
             $current_hour = (int)date('H');
@@ -89,7 +89,7 @@ if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
         } else {
             // If no user data, fallback to guest greeting and default image
             $greeting = "Hello, Guest";
-            $image_to_display = '/../uploads/user/default.png';
+            $image_to_display = '/uploads/user/default.png';
         }
     } catch (PDOException $e) {
         // Handle database errors
@@ -593,7 +593,7 @@ document.getElementById('createButton').addEventListener('click', function() {
     // Optional: Validate input or perform any additional checks here
     
     // Redirect to invoice-form.php
-    window.location.href = 'invoice-form.php';
+    window.location.href = 'http://localhost:8000/pages/invoices/invoice-form.php';
 });
 </script>
     

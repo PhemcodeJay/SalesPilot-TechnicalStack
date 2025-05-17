@@ -366,7 +366,7 @@ $(document).ready(function() {
     // Save sale details as PDF
     $(document).on('click', '.action-btn[data-action="save_pdf"]', function() {
         let salesId = $(this).data('sale-id');
-        window.location.href = 'pdf_generate.php?sales_id=' + salesId; // Redirect to PDF generation script
+        window.location.href = 'http://localhost:8000/config/pdf_generate.php?sales_id=' + salesId; // Redirect to PDF generation script
     });
 });
 </script>
@@ -378,7 +378,7 @@ document.getElementById('createButton').addEventListener('click', function() {
     // Optional: Validate input or perform any additional checks here
     
     // Redirect to invoice-form.php
-    window.location.href = 'invoice-form.php';
+    window.location.href = 'http://localhost:8000/pages/invoices/invoice-form.php';
 });
 </script>
   </body>

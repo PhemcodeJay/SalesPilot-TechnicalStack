@@ -165,7 +165,7 @@ try {
         <h1 style="font-weight: bold; text-decoration: underline;">Analytics</h1>
     </div>
     <a href="analytics-report.php" class="btn btn-primary add-list"><i class="las la-plus mr-3"></i>Reports</a>
-    <a href="pdf_generate.php" class="btn btn-primary add-list"><i class="las la-plus mr-3"></i>PDF</a>
+    <a href="http://localhost:8000/config/pdf_generate.php" class="btn btn-primary add-list"><i class="las la-plus mr-3"></i>PDF</a>
     <!-- Charts Grid -->
     <div class="charts-grid">
 
@@ -266,7 +266,7 @@ document.getElementById('createButton').addEventListener('click', function() {
     // Optional: Validate input or perform any additional checks here
     
     // Redirect to invoice-form.php
-    window.location.href = 'invoice-form.php';
+    window.location.href = 'http://localhost:8000/pages/invoices/invoice-form.php';
 });
 </script>
 

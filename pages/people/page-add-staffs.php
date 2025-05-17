@@ -295,7 +295,7 @@ document.getElementById('createButton').addEventListener('click', function() {
     // Optional: Validate input or perform any additional checks here
     
     // Redirect to invoice-form.php
-    window.location.href = 'invoice-form.php';
+    window.location.href = 'http://localhost:8000/pages/invoices/invoice-form.php';
 });
 </script>
   </body>

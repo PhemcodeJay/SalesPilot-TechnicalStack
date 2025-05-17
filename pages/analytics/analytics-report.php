@@ -479,7 +479,7 @@ h2 {
         <h1 style="font-weight: bold; text-decoration: underline; ">Report</h1> 
     </div>
     <a href="analytics.php" class="btn btn-primary add-list"><i class="las la-plus mr-3"></i>Analytics</a>
-    <a href="pdf_generate.php" class="btn btn-primary add-list"><i class="las la-plus mr-3"></i>PDF</a>
+    <a href="http://localhost:8000/config/pdf_generate.php" class="btn btn-primary add-list"><i class="las la-plus mr-3"></i>PDF</a>
     <h2 class="bg-light" style="text-decoration: underline;">Product Sales</h2>
     <div class="table-responsive rounded mb-3">
                 <table class="data-tables table mb-0 tbl-server-info">
@@ -673,7 +673,7 @@ document.getElementById('createButton').addEventListener('click', function() {
     // Optional: Validate input or perform any additional checks here
     
     // Redirect to invoice-form.php
-    window.location.href = 'invoice-form.php';
+    window.location.href = 'http://localhost:8000/pages/invoices/invoice-form.php';
 });
 </script>
 </body>

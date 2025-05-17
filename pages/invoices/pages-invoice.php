@@ -426,7 +426,7 @@ try {
 
 
 <!-- Footer-->
-<?php include $_SERVER['DOCUMENT_ROOT'] . '/partials/sidebar.php' ; ?>
+<?php include $_SERVER['DOCUMENT_ROOT'] . '/partials/footer.php' ; ?>
     <!-- Backend Bundle JavaScript -->
     <script src="http://localhost:8000/assets/js/backend-bundle.min.js"></script>
     
@@ -457,7 +457,7 @@ $(document).ready(function() {
 
         if (action === 'save-pdf') {
             // Redirect to pdf_generate.php to save PDF
-            window.location.href = 'pdf_generate.php?invoice_id=' + invoiceId;
+            window.location.href = 'http://localhost:8000/config/pdf_generate.php?invoice_id=' + invoiceId;
         } else if (action === 'edit') {
             // Redirect to edit-invoice.php for editing the invoice
             window.location.href = 'edit_invoice.php?invoice_id=' + invoiceId;

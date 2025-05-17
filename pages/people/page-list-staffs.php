@@ -455,7 +455,7 @@ $(document).ready(function() {
     // Save staff details as PDF
     $(document).on('click', '.save-pdf-btn', function() {
         let staffId = $(this).data('staff-id');
-        window.location.href = 'pdf_generate.php?staff_id=' + staffId;
+        window.location.href = 'http://localhost:8000/config/pdf_generate.php?staff_id=' + staffId;
     });
 });
 
@@ -468,7 +468,7 @@ document.getElementById('createButton').addEventListener('click', function() {
     // Optional: Validate input or perform any additional checks here
     
     // Redirect to invoice-form.php
-    window.location.href = 'invoice-form.php';
+    window.location.href = 'http://localhost:8000/pages/invoices/invoice-form.php';
 });
 </script>
   </body>

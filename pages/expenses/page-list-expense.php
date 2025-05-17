@@ -446,7 +446,7 @@ $(document).ready(function() {
         var expenseId = $(this).data('expense-id');
         if (expenseId) {
             // Redirect to the PDF generation page
-            window.location.href = 'pdf_generate.php?expense_id=' + expenseId;
+            window.location.href = 'http://localhost:8000/config/pdf_generate.php?expense_id=' + expenseId;
         } else {
             alert('Invalid expense ID.'); // Alert if the ID is not valid
         }
@@ -461,7 +461,7 @@ document.getElementById('createButton').addEventListener('click', function() {
     // Optional: Validate input or perform any additional checks here
     
     // Redirect to invoice-form.php
-    window.location.href = 'invoice-form.php';
+    window.location.href = 'http://localhost:8000/pages/invoices/invoice-form.php';
 });
 </script>
   </body>
