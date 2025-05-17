@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-require_once __DIR__ . '/../../config/config.php'; // Ensure this file sets up the $connection variable
+require_once __DIR__ . '/../config/config.php'; // Ensure this file sets up the $connection variable
 
 $email = $date = $greeting = "N/A";
 $total_products_sold = $total_sales = $total_cost = "0.00";
@@ -72,7 +72,7 @@ if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
             
             // Check if a user image exists, use default if not
             $existing_image = htmlspecialchars($user_info['user_image']);
-            $image_to_display = !empty($existing_image) ? $existing_image : 'uploads/user/default.png';
+            $image_to_display = !empty($existing_image) ? $existing_image : '/../uploads/user/default.png';
     
             // Determine the time of day for personalized greeting
             $current_hour = (int)date('H');
@@ -89,7 +89,7 @@ if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
         } else {
             // If no user data, fallback to guest greeting and default image
             $greeting = "Hello, Guest";
-            $image_to_display = 'uploads/user/default.png';
+            $image_to_display = '/../uploads/user/default.png';
         }
     } catch (PDOException $e) {
         // Handle database errors

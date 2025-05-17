@@ -1,40 +1,10 @@
-<?php
-session_start();
-
-require_once __DIR__ . '/../../config/config.php'; // Ensure this file sets up the $connection variable
-
-if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
-    $username = htmlspecialchars($_SESSION["username"]);
-    
-    try {
-        // Prepare and execute the query to fetch user information from the users table
-        $user_query = "SELECT id, username, date, email, phone, location, is_active, role, user_image FROM users WHERE username = :username";
-        $stmt = $connection->prepare($user_query);
-        $stmt->bindParam(':username', $username);
-        $stmt->execute();
-        
-        // Fetch user data
-        $user_info = $stmt->fetch(PDO::FETCH_ASSOC);
-    
-        if ($user_info) {
-            // Retrieve user details and sanitize output
-            $email = htmlspecialchars($user_info['email']);
-            $date = date('d F, Y', strtotime($user_info['date']));
-            $location = htmlspecialchars($user_info['location']);
-            $user_id = htmlspecialchars($user_info['id']);
-            
-            // Check if a user image exists, use default if not
-            $existing_image = htmlspecialchars($user_info['user_image']);
-            $image_to_display = !empty($existing_image) ? $existing_image : '/../../uploads/user/default.png';
-
-?>
 
 </div>      <div class="iq-top-navbar">
           <div class="iq-navbar-custom">
               <nav class="navbar navbar-expand-lg navbar-light p-0">
                   <div class="iq-navbar-logo d-flex align-items-center justify-content-between">
                       <i class="ri-menu-line wrapper-menu"></i>
-                      <a href="http://localhost:8000/pages/user/dashboard.php" class="header-logo">
+                      <a href="http://localhost:8000/pages/dashboard.php" class="header-logo">
                           <img src="http://localhost:8000/logo/logonew1.jpg" class="img-fluid rounded-normal" alt="logo">
                           <h5 class="logo-title ml-3">SalesPilot</h5>
       

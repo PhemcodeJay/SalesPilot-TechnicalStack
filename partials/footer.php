@@ -14,7 +14,7 @@
                             </ul>
                         </div>
                         <div class="col-lg-6 text-right">
-                            <span class="mr-1"><script>document.write(new Date().getFullYear())</script>©</span> <a href="http://localhost:8000/pages/user/dashboard.php" class="">SalesPilot</a>.
+                            <span class="mr-1"><script>document.write(new Date().getFullYear())</script>©</span> <a href="http://localhost:8000/pages/dashboard.php" class="">SalesPilot</a>.
                         </div>
                     </div>
                 </div>
