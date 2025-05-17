@@ -191,7 +191,7 @@
                                         </a>
                                 </li>
                                 <li class="">
-                                        <a href="http://localhost:8000/pages/analytic/ssales-metrics.php">
+                                        <a href="http://localhost:8000/pages/analytics/sales-metrics.php">
                                             <i class="las la-minus"></i><span>Category Metrics</span>
                                         </a>
                                 </li>
